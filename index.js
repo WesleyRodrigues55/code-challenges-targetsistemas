@@ -16,7 +16,7 @@ while(K < INDICE){
     SOMA = SOMA + K;
 }
 
-console.log(`Questão 1, resultado: ${SOMA}`)
+console.log(`Questão 1, resultado: ${SOMA}\n`)
 
 
 
@@ -41,11 +41,58 @@ while(soma < numero){
 }
 
 if(fibonacci.includes(numero)){
-    console.log(`Questão 2, resultado: O número ${numero} pertence a sequência de Fibonacci`);
+    console.log(`Questão 2, resultado: O número ${numero} pertence a sequência de Fibonacci\n`);
 } else{
-    console.log(`Questão 2, resultado: O número ${numero} não pertence a sequência de Fibonacci`);
+    console.log(`Questão 2, resultado: O número ${numero} não pertence a sequência de Fibonacci\n`);
 }
 
+/*
+
+    3) Dado um vetor que guarda o valor de faturamento diário de uma distribuidora, faça um programa, na linguagem que desejar, que calcule e retorne:
+        • O menor valor de faturamento ocorrido em um dia do mês;
+        • O maior valor de faturamento ocorrido em um dia do mês;
+        • Número de dias no mês em que o valor de faturamento diário foi superior à média mensal.
+
+    IMPORTANTE:
+    a) Usar o json ou xml disponível como fonte dos dados do faturamento mensal;
+    b) Podem existir dias sem faturamento, como nos finais de semana e feriados. Estes dias devem ser ignorados no cálculo da média;
+
+*/
+
+const fs = require('fs');
+
+function calcularFaturamento(arquivoJson) {
+    const dados = JSON.parse(fs.readFileSync(arquivoJson, 'utf-8'));
+    const diasValidos = dados.filter(dia => dia.valor > 0);
+
+    const menorValor = Math.min(...diasValidos.map(dia => dia.valor));
+    const maiorValor = Math.max(...diasValidos.map(dia => dia.valor));
+
+    const somaFaturamento = diasValidos.reduce((soma, dia) => soma + dia.valor, 0);
+    const mediaMensal = somaFaturamento / diasValidos.length;
+
+    const diasAcimaDaMedia = diasValidos.filter(dia => dia.valor > mediaMensal).length;
+
+    return {
+        menorValor,
+        maiorValor,
+        diasAcimaDaMedia,
+    };
+}
+
+const caminhoArquivo = 'data/data.json';
+
+console.log("Questão 3, resultado:");
+try {
+    const resultado = calcularFaturamento(caminhoArquivo);
+    console.log("Menor valor de faturamento:", resultado.menorValor);
+    console.log("Maior valor de faturamento:", resultado.maiorValor);
+    console.log("Dias com faturamento acima da média:", resultado.diasAcimaDaMedia);
+} catch (error) {
+    console.error("Erro ao processar o arquivo JSON:\n", error.message);
+}
+
+console.log("\n")
 
 /*
 
@@ -78,7 +125,7 @@ for(let estado in faturamento){
     let percentual = (faturamento[estado] / total) * 100;
     console.log(`Questão 4, resultado: ${estado}: ${percentual.toFixed(2)}%`);
 }
-
+console.log("\n")
 /*
 
     5) Escreva um programa que inverta os caracteres de um string.
